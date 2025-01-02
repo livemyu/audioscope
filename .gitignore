@@ -17,3 +17,22 @@ htmlcov/
 # 类型检查缓存
 .mypy_cache/
 .ruff_cache/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# uv
+uv.lock
+
+# 工具与编辑器
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# 运行产物
+*.png
+*.wav
+!examples/**/*.wav

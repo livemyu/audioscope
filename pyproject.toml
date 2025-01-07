@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "audioscope"
+version = "0.1.0"
+description = "音频可视化工具包：波形 / 短时傅里叶谱 / 梅尔谱 / 色度 / 声谱图，支持交互式浏览与离线导出"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Huang Yu", email = "251566018+livemyu@users.noreply.github.com" }]
+keywords = ["audio", "visualization", "spectrogram", "mel", "chroma", "dsp", "numpy"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "numpy>=1.23",
+    "scipy>=1.9",
+]

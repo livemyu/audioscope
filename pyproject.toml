@@ -27,3 +27,24 @@ dependencies = [
     "numpy>=1.23",
     "scipy>=1.9",
 ]
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.6"]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.6",
+    "mypy>=1.8",
+]
+
+[project.scripts]
+audioscope = "audioscope.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/livemyu/audioscope"
+Repository = "https://github.com/livemyu/audioscope"
+Documentation = "https://github.com/livemyu/audioscope/tree/main/docs"
+Changelog = "https://github.com/livemyu/audioscope/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["audioscope"]

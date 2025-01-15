@@ -48,3 +48,15 @@ Changelog = "https://github.com/livemyu/audioscope/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["audioscope"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["audioscope", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # 允许中文标点/全角字符
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 使用问题与讨论
+    url: https://github.com/livemyu/audioscope/discussions
+    about: 用法疑问、经验分享请到 Discussions，issue 区用于缺陷与功能建议。

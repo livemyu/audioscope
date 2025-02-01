@@ -40,3 +40,24 @@ def tone(
     t = np.arange(n, dtype=np.float64) / float(sr)
     y = amplitude * np.sin(2.0 * np.pi * freq * t + phase)
     return np.asarray(y, dtype=np.float64)
+
+
+def chirp(
+    f0: float,
+    f1: float,
+    sr: int = 22050,
+    duration: float = 1.0,
+    *,
+    amplitude: float = 0.5,
+) -> FloatArray:
+    """生成一段线性调频信号（从 ``f0`` 扫到 ``f1``）。"""
+    if sr <= 0:
+        raise InvalidParameterError("sr 必须为正整数")
+    if duration <= 0:
+        raise InvalidParameterError("duration 必须为正数")
+    n = round(sr * duration)
+    t = np.arange(n, dtype=np.float64) / float(sr)
+    k = (f1 - f0) / duration
+    phase = 2.0 * np.pi * (f0 * t + 0.5 * k * t * t)
+    y = amplitude * np.sin(phase)
+    return np.asarray(y, dtype=np.float64)

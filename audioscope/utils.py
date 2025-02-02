@@ -61,3 +61,46 @@ def chirp(
     phase = 2.0 * np.pi * (f0 * t + 0.5 * k * t * t)
     y = amplitude * np.sin(phase)
     return np.asarray(y, dtype=np.float64)
+
+
+def to_mono(y: np.ndarray) -> FloatArray:
+    """把多声道信号混合为单声道。
+
+    约定多声道数组的形状为 ``(channels, n_samples)``；一维输入会原样返回。
+    """
+    arr = np.asarray(y, dtype=np.float64)
+    if arr.ndim == 1:
+        return arr
+    if arr.ndim == 2:
+        return np.asarray(arr.mean(axis=0), dtype=np.float64)
+    raise InvalidParameterError("只支持一维或二维（channels, n）的输入")
+
+
+def normalize(y: np.ndarray, *, peak: float = 1.0) -> FloatArray:
+    """按峰值把信号线性缩放到 ``[-peak, peak]``。全零信号原样返回。"""
+    arr = np.asarray(y, dtype=np.float64)
+    max_abs = float(np.max(np.abs(arr))) if arr.size else 0.0
+    if max_abs == 0.0:
+        return arr
+    return np.asarray(arr * (peak / max_abs), dtype=np.float64)
+
+
+def frame_count(
+    n_samples: int,
+    frame_length: int,
+    hop_length: int,
+    *,
+    center: bool = False,
+    n_fft: int | None = None,
+) -> int:
+    """预测分帧后可以得到多少帧，便于提前分配数组。"""
+    if frame_length <= 0 or hop_length <= 0:
+        raise InvalidParameterError("frame_length 与 hop_length 必须为正")
+    pad = (n_fft or frame_length) if center else 0
+    padded = n_samples + pad
+    if padded < frame_length:
+        return 0
+    return 1 + (padded - frame_length) // hop_length
+
+
+__all__ = ["chirp", "frame_count", "normalize", "to_mono", "tone"]

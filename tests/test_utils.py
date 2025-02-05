@@ -27,3 +27,8 @@ def test_tone_peak_frequency() -> None:
 def test_tone_rejects_nonpositive_freq(bad: float) -> None:
     with pytest.raises(InvalidParameterError):
         aus.tone(bad)
+
+
+def test_chirp_length() -> None:
+    y = aus.chirp(100.0, 1000.0, sr=8000, duration=0.25)
+    assert y.size == 2000

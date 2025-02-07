@@ -32,3 +32,15 @@ def test_tone_rejects_nonpositive_freq(bad: float) -> None:
 def test_chirp_length() -> None:
     y = aus.chirp(100.0, 1000.0, sr=8000, duration=0.25)
     assert y.size == 2000
+
+
+def test_to_mono_averages_channels() -> None:
+    stereo = np.stack([np.ones(10), np.full(10, 3.0)])
+    mono = to_mono(stereo)
+    assert mono.shape == (10,)
+    assert np.allclose(mono, 2.0)
+
+
+def test_to_mono_passthrough_1d() -> None:
+    y = np.arange(5, dtype=np.float64)
+    assert np.shares_memory(to_mono(y), y) or np.allclose(to_mono(y), y)

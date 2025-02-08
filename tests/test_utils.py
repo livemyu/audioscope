@@ -44,3 +44,9 @@ def test_to_mono_averages_channels() -> None:
 def test_to_mono_passthrough_1d() -> None:
     y = np.arange(5, dtype=np.float64)
     assert np.shares_memory(to_mono(y), y) or np.allclose(to_mono(y), y)
+
+
+def test_normalize_scales_to_peak() -> None:
+    y = np.array([0.0, 0.25, -0.5])
+    out = aus.normalize(y, peak=1.0)
+    assert np.isclose(np.max(np.abs(out)), 1.0)

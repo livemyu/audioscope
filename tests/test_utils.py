@@ -50,3 +50,8 @@ def test_normalize_scales_to_peak() -> None:
     y = np.array([0.0, 0.25, -0.5])
     out = aus.normalize(y, peak=1.0)
     assert np.isclose(np.max(np.abs(out)), 1.0)
+
+
+def test_normalize_zero_signal_is_safe() -> None:
+    y = np.zeros(4)
+    assert np.allclose(aus.normalize(y), 0.0)

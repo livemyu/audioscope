@@ -55,3 +55,11 @@ def test_normalize_scales_to_peak() -> None:
 def test_normalize_zero_signal_is_safe() -> None:
     y = np.zeros(4)
     assert np.allclose(aus.normalize(y), 0.0)
+
+
+def test_frame_count_matches_framing() -> None:
+    from audioscope.core.framing import frame
+
+    y = np.arange(1000, dtype=np.float64)
+    n = frame_count(y.size, 256, 128)
+    assert frame(y, 256, 128).shape[0] == n

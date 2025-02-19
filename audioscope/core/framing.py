@@ -42,3 +42,23 @@ def pad_center(x: np.ndarray, size: int, *, mode: PadMode = "constant") -> Float
     left = (size - n) // 2
     right = size - n - left
     return np.asarray(np.pad(arr, (left, right), mode=mode), dtype=np.float64)
+
+
+def frame(y: np.ndarray, frame_length: int, hop_length: int) -> FloatArray:
+    """把一维信号切成形状为 ``(n_frames, frame_length)`` 的二维数组。
+
+    第 ``i`` 帧对应原信号的 ``y[i * hop_length : i * hop_length + frame_length]``。
+    """
+    arr = np.asarray(y, dtype=np.float64)
+    if arr.ndim != 1:
+        raise InvalidParameterError("frame 只支持一维信号")
+    if frame_length <= 0 or hop_length <= 0:
+        raise InvalidParameterError("frame_length 与 hop_length 必须为正")
+    if arr.shape[0] < frame_length:
+        raise InvalidParameterError(f"信号长度 {arr.shape[0]} 小于帧长 {frame_length}，无法分帧")
+    windows = sliding_window_view(arr, frame_length)
+    frames = windows[::hop_length]
+    return np.ascontiguousarray(frames, dtype=np.float64)
+
+
+__all__ = ["PadMode", "frame", "pad_center"]

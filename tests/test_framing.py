@@ -19,3 +19,8 @@ def test_frame_first_and_second_frame_content() -> None:
     frames = frame(y, 8, 4)
     assert np.array_equal(frames[0], y[0:8])
     assert np.array_equal(frames[1], y[4:12])
+
+
+def test_frame_rejects_short_signal() -> None:
+    with pytest.raises(InvalidParameterError):
+        frame(np.zeros(4), 8, 2)

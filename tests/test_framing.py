@@ -24,3 +24,16 @@ def test_frame_first_and_second_frame_content() -> None:
 def test_frame_rejects_short_signal() -> None:
     with pytest.raises(InvalidParameterError):
         frame(np.zeros(4), 8, 2)
+
+
+def test_frame_rejects_bad_params() -> None:
+    with pytest.raises(InvalidParameterError):
+        frame(np.zeros(100), 8, 0)
+
+
+def test_pad_center_length_and_centering() -> None:
+    y = np.ones(4)
+    padded = pad_center(y, 10)
+    assert padded.size == 10
+    assert np.array_equal(padded[3:7], y)
+    assert padded[0] == 0.0

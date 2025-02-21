@@ -37,3 +37,8 @@ def test_pad_center_length_and_centering() -> None:
     assert padded.size == 10
     assert np.array_equal(padded[3:7], y)
     assert padded[0] == 0.0
+
+
+def test_pad_center_rejects_smaller_target() -> None:
+    with pytest.raises(InvalidParameterError):
+        pad_center(np.ones(10), 4)

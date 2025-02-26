@@ -31,3 +31,25 @@ def get_window(window: str, n: int, *, fftbins: bool = True) -> FloatArray:
         raise InvalidParameterError("窗长 n 必须为正")
     if n == 1:
         return np.ones(1, dtype=np.float64)
+
+    key = _ALIASES.get(window.lower(), window.lower())
+    if key == "boxcar":
+        return np.ones(n, dtype=np.float64)
+
+    # 周期窗除以 n，对称窗除以 n-1。
+    m = n if fftbins else n - 1
+    k = np.arange(n, dtype=np.float64)
+    if key == "hann":
+        w = 0.5 - 0.5 * np.cos(2.0 * np.pi * k / m)
+    elif key == "hamming":
+        w = 0.54 - 0.46 * np.cos(2.0 * np.pi * k / m)
+    elif key == "blackman":
+        w = 0.42 - 0.5 * np.cos(2.0 * np.pi * k / m) + 0.08 * np.cos(4.0 * np.pi * k / m)
+    elif key == "bartlett":
+        w = 1.0 - np.abs((k - m / 2.0) / (m / 2.0))
+    else:
+        raise InvalidParameterError(f"未知的窗函数：{window!r}")
+    return np.asarray(w, dtype=np.float64)
+
+
+__all__ = ["get_window"]

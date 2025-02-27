@@ -28,3 +28,8 @@ def test_periodic_and_symmetric_differ() -> None:
         get_window("hann", 32, fftbins=True),
         get_window("hann", 32, fftbins=False),
     )
+
+
+def test_aliases() -> None:
+    assert np.allclose(get_window("hanning", 16), get_window("hann", 16))
+    assert np.allclose(get_window("rectangular", 16), get_window("boxcar", 16))

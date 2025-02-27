@@ -21,3 +21,10 @@ def test_symmetric_hann_endpoints_are_zero() -> None:
     w = get_window("hann", 65, fftbins=False)
     assert np.isclose(w[0], 0.0, atol=1e-9)
     assert np.isclose(w[-1], 0.0, atol=1e-9)
+
+
+def test_periodic_and_symmetric_differ() -> None:
+    assert not np.allclose(
+        get_window("hann", 32, fftbins=True),
+        get_window("hann", 32, fftbins=False),
+    )

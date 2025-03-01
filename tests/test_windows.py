@@ -33,3 +33,8 @@ def test_periodic_and_symmetric_differ() -> None:
 def test_aliases() -> None:
     assert np.allclose(get_window("hanning", 16), get_window("hann", 16))
     assert np.allclose(get_window("rectangular", 16), get_window("boxcar", 16))
+
+
+def test_unknown_window_raises() -> None:
+    with pytest.raises(InvalidParameterError):
+        get_window("nope", 16)

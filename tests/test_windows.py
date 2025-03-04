@@ -38,3 +38,7 @@ def test_aliases() -> None:
 def test_unknown_window_raises() -> None:
     with pytest.raises(InvalidParameterError):
         get_window("nope", 16)
+
+
+def test_single_sample_window() -> None:
+    assert np.array_equal(get_window("hann", 1), np.ones(1))

@@ -29,3 +29,16 @@ def hz_to_mel(frequencies: np.ndarray | float, *, htk: bool = False) -> FloatArr
         log_vals = _MIN_LOG_MEL + np.log(safe / _MIN_LOG_HZ) / _LOGSTEP
     mels = np.where(log_region, log_vals, mels)
     return np.asarray(mels, dtype=np.float64)
+
+
+def mel_to_hz(mels: np.ndarray | float, *, htk: bool = False) -> FloatArray:
+    """梅尔刻度换算回频率（Hz），是 :func:`hz_to_mel` 的逆运算。"""
+    m = np.asarray(mels, dtype=np.float64)
+    if htk:
+        return np.asarray(700.0 * (10.0 ** (m / 2595.0) - 1.0), dtype=np.float64)
+
+    freqs = _F_SP * m
+    log_region = m >= _MIN_LOG_MEL
+    log_vals = _MIN_LOG_HZ * np.exp(_LOGSTEP * (m - _MIN_LOG_MEL))
+    freqs = np.where(log_region, log_vals, freqs)
+    return np.asarray(freqs, dtype=np.float64)

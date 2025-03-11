@@ -42,3 +42,36 @@ def mel_to_hz(mels: np.ndarray | float, *, htk: bool = False) -> FloatArray:
     log_vals = _MIN_LOG_HZ * np.exp(_LOGSTEP * (m - _MIN_LOG_MEL))
     freqs = np.where(log_region, log_vals, freqs)
     return np.asarray(freqs, dtype=np.float64)
+
+
+def power_to_db(
+    power: np.ndarray,
+    *,
+    ref: float = 1.0,
+    amin: float = 1e-10,
+    top_db: float | None = 80.0,
+) -> FloatArray:
+    """功率谱转分贝：``10 * log10(power / ref)``，并做下限裁剪。"""
+    if amin <= 0:
+        raise ValueError("amin 必须为正")
+    s = np.abs(np.asarray(power, dtype=np.float64))
+    ref_value = max(abs(ref), amin)
+    log_spec = 10.0 * np.log10(np.maximum(amin, s))
+    log_spec -= 10.0 * np.log10(np.maximum(amin, ref_value))
+    if top_db is not None:
+        if top_db < 0:
+            raise ValueError("top_db 不能为负")
+        log_spec = np.maximum(log_spec, float(log_spec.max()) - top_db)
+    return np.asarray(log_spec, dtype=np.float64)
+
+
+def amplitude_to_db(
+    amplitude: np.ndarray,
+    *,
+    ref: float = 1.0,
+    amin: float = 1e-5,
+    top_db: float | None = 80.0,
+) -> FloatArray:
+    """幅度谱转分贝，等价于对功率谱 ``|S|**2`` 调用 :func:`power_to_db`。"""
+    magnitude = np.abs(np.asarray(amplitude, dtype=np.float64))
+    return power_to_db(magnitude**2, ref=ref**2, amin=amin**2, top_db=top_db)

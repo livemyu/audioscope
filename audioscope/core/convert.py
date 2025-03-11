@@ -75,3 +75,25 @@ def amplitude_to_db(
     """幅度谱转分贝，等价于对功率谱 ``|S|**2`` 调用 :func:`power_to_db`。"""
     magnitude = np.abs(np.asarray(amplitude, dtype=np.float64))
     return power_to_db(magnitude**2, ref=ref**2, amin=amin**2, top_db=top_db)
+
+
+def db_to_power(db: np.ndarray, *, ref: float = 1.0) -> FloatArray:
+    """分贝转功率，是 :func:`power_to_db` 的逆运算。"""
+    arr = np.asarray(db, dtype=np.float64)
+    return np.asarray(ref * np.power(10.0, 0.1 * arr), dtype=np.float64)
+
+
+def db_to_amplitude(db: np.ndarray, *, ref: float = 1.0) -> FloatArray:
+    """分贝转线性幅度，是 :func:`amplitude_to_db` 的逆运算。"""
+    arr = np.asarray(db, dtype=np.float64)
+    return np.asarray(ref * np.power(10.0, 0.05 * arr), dtype=np.float64)
+
+
+__all__ = [
+    "amplitude_to_db",
+    "db_to_amplitude",
+    "db_to_power",
+    "hz_to_mel",
+    "mel_to_hz",
+    "power_to_db",
+]

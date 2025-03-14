@@ -29,3 +29,8 @@ def test_htk_roundtrip() -> None:
 
 def test_power_to_db_reference() -> None:
     assert np.isclose(power_to_db(np.array([1.0]), top_db=None)[0], 0.0)
+
+
+def test_power_to_db_monotonic() -> None:
+    db = power_to_db(np.array([0.01, 0.1, 1.0]), top_db=None)
+    assert db[0] < db[1] < db[2]

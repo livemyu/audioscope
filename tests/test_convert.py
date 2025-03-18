@@ -50,3 +50,8 @@ def test_amplitude_to_db_matches_power() -> None:
 def test_top_db_clips() -> None:
     db = power_to_db(np.array([1e-8, 1.0]), top_db=60.0)
     assert db.min() >= db.max() - 60.0 - 1e-9
+
+
+def test_power_to_db_rejects_bad_amin() -> None:
+    with pytest.raises(ValueError, match="amin"):
+        power_to_db(np.array([1.0]), amin=0.0)

@@ -34,3 +34,9 @@ def test_power_to_db_reference() -> None:
 def test_power_to_db_monotonic() -> None:
     db = power_to_db(np.array([0.01, 0.1, 1.0]), top_db=None)
     assert db[0] < db[1] < db[2]
+
+
+def test_db_power_inverse() -> None:
+    power = np.array([0.001, 0.5, 2.0])
+    db = power_to_db(power, top_db=None)
+    assert np.allclose(db_to_power(db), power, rtol=1e-6)

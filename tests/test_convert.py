@@ -40,3 +40,13 @@ def test_db_power_inverse() -> None:
     power = np.array([0.001, 0.5, 2.0])
     db = power_to_db(power, top_db=None)
     assert np.allclose(db_to_power(db), power, rtol=1e-6)
+
+
+def test_amplitude_to_db_matches_power() -> None:
+    amp = np.array([0.1, 1.0, 10.0])
+    assert np.allclose(amplitude_to_db(amp, top_db=None), power_to_db(amp**2, top_db=None))
+
+
+def test_top_db_clips() -> None:
+    db = power_to_db(np.array([1e-8, 1.0]), top_db=60.0)
+    assert db.min() >= db.max() - 60.0 - 1e-9

@@ -112,3 +112,11 @@ def istft(
         else:
             y = np.pad(y, (0, length - y.shape[0]), mode="constant")
     return np.asarray(y, dtype=np.float64)
+
+
+def stft_frequencies(sr: int, n_fft: int) -> FloatArray:
+    """返回 STFT 每个频率 bin 的中心频率（Hz）。"""
+    return np.asarray(np.fft.rfftfreq(n_fft, d=1.0 / sr), dtype=np.float64)
+
+
+__all__ = ["istft", "stft", "stft_frequencies"]

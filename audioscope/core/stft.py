@@ -62,3 +62,53 @@ def stft(
     windowed = frames * win[np.newaxis, :]
     spectrum = np.fft.rfft(windowed, n=n_fft, axis=1)
     return np.asarray(spectrum.T, dtype=np.complex128)
+
+
+def istft(
+    spectrum: np.ndarray,
+    *,
+    hop_length: int | None = None,
+    win_length: int | None = None,
+    n_fft: int | None = None,
+    window: str = "hann",
+    center: bool = True,
+    length: int | None = None,
+) -> FloatArray:
+    """由 STFT 复数谱重建时域信号（加窗重叠相加）。"""
+    s = np.asarray(spectrum, dtype=np.complex128)
+    if s.ndim != 2:
+        raise InvalidParameterError("istft 需要二维复数谱")
+    n_bins, n_frames = s.shape
+    if n_fft is None:
+        n_fft = 2 * (n_bins - 1)
+    if win_length is None:
+        win_length = n_fft
+    if hop_length is None:
+        hop_length = win_length // 4
+
+    win = get_window(window, win_length)
+    if win_length < n_fft:
+        win = pad_center(win, n_fft)
+
+    frames = np.fft.irfft(s, n=n_fft, axis=0)
+    expected = n_fft + hop_length * (n_frames - 1)
+    # 显式标注为 FloatArray（秩无关），后续的切片重新赋值在各 numpy 版本下都成立。
+    y: FloatArray = np.zeros(expected, dtype=np.float64)
+    win_sum = np.zeros(expected, dtype=np.float64)
+    win_sq = win * win
+    for i in range(n_frames):
+        start = i * hop_length
+        y[start : start + n_fft] += frames[:, i] * win
+        win_sum[start : start + n_fft] += win_sq
+
+    nonzero = win_sum > 1e-8
+    y[nonzero] /= win_sum[nonzero]
+
+    if center and expected > n_fft:
+        y = y[n_fft // 2 : expected - n_fft // 2]
+    if length is not None:
+        if length <= y.shape[0]:
+            y = y[:length]
+        else:
+            y = np.pad(y, (0, length - y.shape[0]), mode="constant")
+    return np.asarray(y, dtype=np.float64)

@@ -23,3 +23,11 @@ def test_stft_peak_bin() -> None:
     mag = np.abs(spec).mean(axis=1)
     expected = round(440.0 * n_fft / sr)
     assert abs(int(np.argmax(mag)) - expected) <= 1
+
+
+def test_istft_reconstructs_signal() -> None:
+    y = aus.tone(300.0, sr=8000, duration=0.5)
+    spec = aus.stft(y, n_fft=512, hop_length=128)
+    rec = aus.istft(spec, hop_length=128, n_fft=512, length=y.size)
+    corr = float(np.corrcoef(y, rec)[0, 1])
+    assert corr > 0.99

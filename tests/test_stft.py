@@ -31,3 +31,10 @@ def test_istft_reconstructs_signal() -> None:
     rec = aus.istft(spec, hop_length=128, n_fft=512, length=y.size)
     corr = float(np.corrcoef(y, rec)[0, 1])
     assert corr > 0.99
+
+
+def test_stft_frequencies() -> None:
+    freqs = stft_frequencies(8000, 1024)
+    assert freqs.shape == (513,)
+    assert np.isclose(freqs[0], 0.0)
+    assert np.isclose(freqs[-1], 4000.0)

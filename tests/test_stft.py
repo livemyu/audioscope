@@ -38,3 +38,8 @@ def test_stft_frequencies() -> None:
     assert freqs.shape == (513,)
     assert np.isclose(freqs[0], 0.0)
     assert np.isclose(freqs[-1], 4000.0)
+
+
+def test_stft_rejects_2d() -> None:
+    with pytest.raises(InvalidParameterError):
+        aus.stft(np.zeros((2, 100)))

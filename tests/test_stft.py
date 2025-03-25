@@ -43,3 +43,24 @@ def test_stft_frequencies() -> None:
 def test_stft_rejects_2d() -> None:
     with pytest.raises(InvalidParameterError):
         aus.stft(np.zeros((2, 100)))
+
+
+def test_stft_matches_scipy() -> None:
+    scipy_signal = pytest.importorskip("scipy.signal")
+    sr, n_fft, hop = 8000, 256, 64
+    y = aus.chirp(100.0, 2000.0, sr=sr, duration=0.5)
+    ours = np.abs(aus.stft(y, n_fft=n_fft, hop_length=hop, center=False))
+    _, _, ref = scipy_signal.stft(
+        y,
+        fs=sr,
+        window="hann",
+        nperseg=n_fft,
+        noverlap=n_fft - hop,
+        boundary=None,
+        padded=False,
+    )
+    # 逐帧比较峰值频率 bin 的位置，验证时频结构一致。
+    m = min(ours.shape[1], ref.shape[1])
+    peak_ours = np.argmax(ours[:, :m], axis=0)
+    peak_ref = np.argmax(np.abs(ref)[:, :m], axis=0)
+    assert np.mean(np.abs(peak_ours - peak_ref) <= 2) > 0.8

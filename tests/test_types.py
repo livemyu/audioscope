@@ -19,3 +19,15 @@ def test_signal_basic_properties(sine_signal: aus.Signal) -> None:
 def test_signal_rejects_2d() -> None:
     with pytest.raises(InvalidParameterError):
         aus.Signal(np.zeros((2, 10)), 8000)
+
+
+def test_signal_rejects_bad_sr() -> None:
+    with pytest.raises(InvalidParameterError):
+        aus.Signal(np.zeros(10), 0)
+
+
+def test_signal_as_array(sine_signal: aus.Signal) -> None:
+    arr = np.asarray(sine_signal)
+    assert arr.shape == (8000,)
+    converted = np.asarray(sine_signal, dtype=np.float32)
+    assert converted.dtype == np.float32

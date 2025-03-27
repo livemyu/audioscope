@@ -66,3 +66,52 @@ class Signal:
 
 
 @dataclass(frozen=True, eq=False)
+class Spectrogram:
+    """时频表示的统一容器。
+
+    ``data`` 形状为 ``(n_bins, n_frames)``。``kind`` 用来标注这是幅度谱、
+    功率谱、分贝谱、梅尔谱还是色度谱，绘图与导出会据此选择默认样式。
+    """
+
+    data: FloatArray
+    sr: int
+    hop_length: int
+    n_fft: int
+    kind: str = "power"
+    freqs: FloatArray | None = None
+    bin_labels: tuple[str, ...] | None = field(default=None)
+
+    def __post_init__(self) -> None:
+        arr = np.asarray(self.data, dtype=np.float64)
+        if arr.ndim != 2:
+            raise InvalidParameterError("Spectrogram.data 必须是二维数组")
+        object.__setattr__(self, "data", arr)
+
+    @property
+    def n_bins(self) -> int:
+        """频率维（行数）。"""
+        return int(self.data.shape[0])
+
+    @property
+    def n_frames(self) -> int:
+        """时间维（列数）。"""
+        return int(self.data.shape[1])
+
+    @property
+    def shape(self) -> tuple[int, int]:
+        return (self.n_bins, self.n_frames)
+
+    @property
+    def times(self) -> FloatArray:
+        """每一帧对应的中心时间（秒）。"""
+        frames = np.arange(self.n_frames, dtype=np.float64)
+        return np.asarray(frames * self.hop_length / float(self.sr), dtype=np.float64)
+
+    def __repr__(self) -> str:
+        return (
+            f"Spectrogram(kind={self.kind!r}, n_bins={self.n_bins}, "
+            f"n_frames={self.n_frames}, sr={self.sr}, hop_length={self.hop_length})"
+        )
+
+
+__all__ = ["Signal", "Spectrogram"]

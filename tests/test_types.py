@@ -37,3 +37,8 @@ def test_signal_segment(sine_signal: aus.Signal) -> None:
     seg = sine_signal.segment(0.25, 0.5)
     assert seg.n_samples == 2000
     assert seg.sr == sine_signal.sr
+
+
+def test_signal_segment_rejects_reversed(sine_signal: aus.Signal) -> None:
+    with pytest.raises(InvalidParameterError):
+        sine_signal.segment(0.5, 0.1)

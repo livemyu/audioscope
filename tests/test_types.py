@@ -42,3 +42,17 @@ def test_signal_segment(sine_signal: aus.Signal) -> None:
 def test_signal_segment_rejects_reversed(sine_signal: aus.Signal) -> None:
     with pytest.raises(InvalidParameterError):
         sine_signal.segment(0.5, 0.1)
+
+
+def test_signal_repr(sine_signal: aus.Signal) -> None:
+    assert "Signal" in repr(sine_signal)
+
+
+def test_spectrogram_shape_and_times() -> None:
+    data = np.zeros((5, 4))
+    spec = Spectrogram(data=data, sr=8000, hop_length=256, n_fft=512)
+    assert spec.n_bins == 5
+    assert spec.n_frames == 4
+    assert spec.shape == (5, 4)
+    assert spec.times.shape == (4,)
+    assert np.isclose(spec.times[1], 256 / 8000)

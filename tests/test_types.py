@@ -56,3 +56,8 @@ def test_spectrogram_shape_and_times() -> None:
     assert spec.shape == (5, 4)
     assert spec.times.shape == (4,)
     assert np.isclose(spec.times[1], 256 / 8000)
+
+
+def test_spectrogram_rejects_1d() -> None:
+    with pytest.raises(InvalidParameterError):
+        Spectrogram(data=np.zeros(5), sr=8000, hop_length=256, n_fft=512)

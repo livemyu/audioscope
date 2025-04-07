@@ -61,3 +61,43 @@ def mel_filterbank(
         enorm = 2.0 / (mel_f[2 : n_mels + 2] - mel_f[:n_mels])
         weights *= enorm[:, np.newaxis]
     return np.asarray(weights, dtype=np.float64)
+
+
+def melspectrogram(
+    y: Signal | np.ndarray,
+    sr: int = 22050,
+    *,
+    n_fft: int = 2048,
+    hop_length: int | None = None,
+    n_mels: int = 128,
+    fmin: float = 0.0,
+    fmax: float | None = None,
+    htk: bool = False,
+    power: float = 2.0,
+    window: str = "hann",
+    center: bool = True,
+) -> Spectrogram:
+    """计算梅尔声谱图。"""
+    _, sr = _as_array_and_sr(y, sr)
+    spec = spectrogram(
+        y,
+        sr,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        window=window,
+        center=center,
+        power=power,
+    )
+    fb = mel_filterbank(sr, n_fft, n_mels=n_mels, fmin=fmin, fmax=fmax, htk=htk)
+    mel_data = fb @ spec.data
+    return Spectrogram(
+        data=np.asarray(mel_data, dtype=np.float64),
+        sr=sr,
+        hop_length=spec.hop_length,
+        n_fft=n_fft,
+        kind="mel",
+        freqs=mel_frequencies(n_mels, fmin=fmin, fmax=fmax or sr / 2.0, htk=htk),
+    )
+
+
+__all__ = ["mel_filterbank", "mel_frequencies", "melspectrogram"]

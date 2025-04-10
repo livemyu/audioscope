@@ -30,3 +30,11 @@ def test_melspectrogram_shape() -> None:
     assert mel.shape[0] == 24
     assert mel.kind == "mel"
     assert np.all(mel.data >= 0)
+
+
+def test_melspectrogram_matches_manual_projection() -> None:
+    y = aus.tone(440.0, sr=8000, duration=0.5)
+    spec = aus.spectrogram(y, 8000, n_fft=512, hop_length=128, power=2.0)
+    fb = mel_filterbank(8000, 512, n_mels=24)
+    mel = aus.melspectrogram(y, 8000, n_fft=512, hop_length=128, n_mels=24)
+    assert np.allclose(mel.data, fb @ spec.data, rtol=1e-6)

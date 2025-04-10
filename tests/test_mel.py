@@ -22,3 +22,11 @@ def test_mel_filterbank_shape_and_nonneg() -> None:
 def test_mel_filterbank_each_band_has_energy() -> None:
     fb = mel_filterbank(8000, 1024, n_mels=40)
     assert np.all(fb.sum(axis=1) > 0)
+
+
+def test_melspectrogram_shape() -> None:
+    y = aus.tone(440.0, sr=8000, duration=0.5)
+    mel = aus.melspectrogram(y, 8000, n_fft=512, hop_length=128, n_mels=24)
+    assert mel.shape[0] == 24
+    assert mel.kind == "mel"
+    assert np.all(mel.data >= 0)

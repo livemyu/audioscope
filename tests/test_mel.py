@@ -17,3 +17,8 @@ def test_mel_filterbank_shape_and_nonneg() -> None:
     fb = mel_filterbank(8000, 512, n_mels=32)
     assert fb.shape == (32, 1 + 512 // 2)
     assert np.all(fb >= 0)
+
+
+def test_mel_filterbank_each_band_has_energy() -> None:
+    fb = mel_filterbank(8000, 1024, n_mels=40)
+    assert np.all(fb.sum(axis=1) > 0)

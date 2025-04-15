@@ -52,3 +52,40 @@ def chroma_filterbank(
     chroma_idx = np.round(midi).astype(np.int64) % n_chroma
     fb[chroma_idx, bin_idx] = 1.0
     return fb
+
+
+def chroma(
+    y: Signal | np.ndarray,
+    sr: int = 22050,
+    *,
+    n_fft: int = 2048,
+    hop_length: int | None = None,
+    n_chroma: int = 12,
+    window: str = "hann",
+    center: bool = True,
+) -> Spectrogram:
+    """计算色度图（12 × 帧数）。"""
+    _, sr = _as_array_and_sr(y, sr)
+    spec = spectrogram(
+        y,
+        sr,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        window=window,
+        center=center,
+        power=1.0,
+    )
+    fb = chroma_filterbank(sr, n_fft, n_chroma=n_chroma)
+    data = fb @ spec.data
+    labels = NOTE_NAMES if n_chroma == 12 else tuple(str(i) for i in range(n_chroma))
+    return Spectrogram(
+        data=np.asarray(data, dtype=np.float64),
+        sr=sr,
+        hop_length=spec.hop_length,
+        n_fft=n_fft,
+        kind="chroma",
+        bin_labels=labels,
+    )
+
+
+__all__ = ["NOTE_NAMES", "chroma", "chroma_filterbank"]

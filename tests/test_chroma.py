@@ -21,3 +21,10 @@ def test_chroma_peaks_at_expected_pitch_class(freq: float, pitch_class: int) -> 
     y = aus.tone(freq, sr=8000, duration=1.0)
     ch = aus.chroma(y, 8000, n_fft=2048, hop_length=512)
     assert int(np.argmax(ch.data.sum(axis=1))) == pitch_class
+
+
+def test_chroma_labels() -> None:
+    y = aus.tone(440.0, sr=8000, duration=0.3)
+    ch = aus.chroma(y, 8000, n_fft=1024, hop_length=256)
+    assert ch.bin_labels == NOTE_NAMES
+    assert ch.shape[0] == 12

@@ -16,3 +16,6 @@ from .convert import (
     power_to_db,
 )
 from .framing import frame, pad_center
+from .mel import mel_filterbank, mel_frequencies, melspectrogram
+from .resample import resample
+from .spectrogram import spectrogram

@@ -27,3 +27,8 @@ def test_resample_preserves_frequency() -> None:
     spectrum = np.abs(np.fft.rfft(out))
     freqs = np.fft.rfftfreq(out.size, 1 / sr_out)
     assert abs(freqs[int(np.argmax(spectrum))] - 440.0) < 5.0
+
+
+def test_resample_rejects_bad_sr() -> None:
+    with pytest.raises(InvalidParameterError):
+        resample(np.zeros(10), 0, 8000)

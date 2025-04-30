@@ -32,3 +32,20 @@ def rms(
     frames = _framed(y, frame_length, hop_length, center=center)
     values = np.sqrt(np.mean(frames**2, axis=1))
     return np.asarray(values, dtype=np.float64)
+
+
+def zero_crossing_rate(
+    y: np.ndarray,
+    *,
+    frame_length: int = 2048,
+    hop_length: int = 512,
+    center: bool = True,
+) -> FloatArray:
+    """逐帧计算过零率：帧内符号变化次数占比。"""
+    if frame_length <= 0 or hop_length <= 0:
+        raise InvalidParameterError("frame_length 与 hop_length 必须为正")
+    frames = _framed(y, frame_length, hop_length, center=center)
+    signs = np.signbit(frames)
+    crossings = np.abs(np.diff(signs.astype(np.int64), axis=1))
+    rate = crossings.sum(axis=1) / float(frame_length)
+    return np.asarray(rate, dtype=np.float64)

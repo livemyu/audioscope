@@ -49,3 +49,21 @@ def zero_crossing_rate(
     crossings = np.abs(np.diff(signs.astype(np.int64), axis=1))
     rate = crossings.sum(axis=1) / float(frame_length)
     return np.asarray(rate, dtype=np.float64)
+
+
+def amplitude_envelope(
+    y: np.ndarray,
+    *,
+    frame_length: int = 2048,
+    hop_length: int = 512,
+    center: bool = True,
+) -> FloatArray:
+    """逐帧取最大绝对幅度，得到粗粒度的幅度包络。"""
+    if frame_length <= 0 or hop_length <= 0:
+        raise InvalidParameterError("frame_length 与 hop_length 必须为正")
+    frames = _framed(y, frame_length, hop_length, center=center)
+    env = np.max(np.abs(frames), axis=1)
+    return np.asarray(env, dtype=np.float64)
+
+
+__all__ = ["amplitude_envelope", "rms", "zero_crossing_rate"]

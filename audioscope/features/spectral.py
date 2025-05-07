@@ -29,3 +29,14 @@ def spectral_centroid(spec: np.ndarray, freqs: np.ndarray) -> FloatArray:
     total = np.where(total > 0.0, total, 1.0)
     centroid = (f[:, np.newaxis] * s).sum(axis=0) / total
     return np.asarray(centroid, dtype=np.float64)
+
+
+def spectral_bandwidth(spec: np.ndarray, freqs: np.ndarray, *, p: float = 2.0) -> FloatArray:
+    """谱带宽：频率相对谱质心的 ``p`` 阶展宽。"""
+    s, f = _check(spec, freqs)
+    centroid = spectral_centroid(s, f)
+    total = s.sum(axis=0)
+    total = np.where(total > 0.0, total, 1.0)
+    deviation = np.abs(f[:, np.newaxis] - centroid[np.newaxis, :]) ** p
+    bw = (deviation * s).sum(axis=0) / total
+    return np.asarray(bw ** (1.0 / p), dtype=np.float64)

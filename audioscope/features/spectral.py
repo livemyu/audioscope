@@ -40,3 +40,17 @@ def spectral_bandwidth(spec: np.ndarray, freqs: np.ndarray, *, p: float = 2.0) -
     deviation = np.abs(f[:, np.newaxis] - centroid[np.newaxis, :]) ** p
     bw = (deviation * s).sum(axis=0) / total
     return np.asarray(bw ** (1.0 / p), dtype=np.float64)
+
+
+def spectral_rolloff(
+    spec: np.ndarray, freqs: np.ndarray, *, roll_percent: float = 0.85
+) -> FloatArray:
+    """谱滚降点：累计能量达到 ``roll_percent`` 时对应的频率。"""
+    if not 0.0 < roll_percent < 1.0:
+        raise InvalidParameterError("roll_percent 必须落在 (0, 1) 区间")
+    s, f = _check(spec, freqs)
+    cumulative = np.cumsum(s, axis=0)
+    threshold = roll_percent * cumulative[-1, :]
+    reached = cumulative >= threshold[np.newaxis, :]
+    idx = np.argmax(reached, axis=0)
+    return np.asarray(f[idx], dtype=np.float64)

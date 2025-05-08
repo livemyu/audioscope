@@ -54,3 +54,22 @@ def spectral_rolloff(
     reached = cumulative >= threshold[np.newaxis, :]
     idx = np.argmax(reached, axis=0)
     return np.asarray(f[idx], dtype=np.float64)
+
+
+def spectral_flatness(spec: np.ndarray, *, amin: float = 1e-10) -> FloatArray:
+    """谱平坦度：几何平均与算术平均之比，越接近 1 越像噪声。"""
+    s = np.abs(np.asarray(spec, dtype=np.float64))
+    if s.ndim != 2:
+        raise InvalidParameterError("频谱 S 必须是二维数组")
+    s = np.maximum(s, amin)
+    geometric = np.exp(np.mean(np.log(s), axis=0))
+    arithmetic = np.mean(s, axis=0)
+    return np.asarray(geometric / arithmetic, dtype=np.float64)
+
+
+__all__ = [
+    "spectral_bandwidth",
+    "spectral_centroid",
+    "spectral_flatness",
+    "spectral_rolloff",
+]

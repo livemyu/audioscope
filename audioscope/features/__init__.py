@@ -8,3 +8,14 @@ from .spectral import (
     spectral_flatness,
     spectral_rolloff,
 )
+from .time_domain import amplitude_envelope, rms, zero_crossing_rate
+
+__all__ = [
+    "amplitude_envelope",
+    "rms",
+    "spectral_bandwidth",
+    "spectral_centroid",
+    "spectral_flatness",
+    "spectral_rolloff",
+    "zero_crossing_rate",
+]

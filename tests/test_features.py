@@ -27,3 +27,21 @@ def test_rms_frame_count() -> None:
     y = aus.tone(440.0, sr=8000, duration=1.0)
     values = rms(y, frame_length=1024, hop_length=256)
     assert values.ndim == 1 and values.size > 0
+
+
+def test_zcr_higher_for_high_frequency() -> None:
+    low = zero_crossing_rate(aus.tone(100.0, sr=8000, duration=1.0))
+    high = zero_crossing_rate(aus.tone(2000.0, sr=8000, duration=1.0))
+    assert high.mean() > low.mean()
+
+
+def test_amplitude_envelope_bounds() -> None:
+    y = aus.tone(440.0, sr=8000, duration=0.5)
+    env = amplitude_envelope(y, frame_length=512, hop_length=256)
+    assert np.all(env <= np.max(np.abs(y)) + 1e-9)
+
+
+def _mag(y: np.ndarray, sr: int) -> tuple[np.ndarray, np.ndarray]:
+    spec = aus.spectrogram(y, sr, n_fft=1024, hop_length=256, power=1.0)
+    assert spec.freqs is not None
+    return spec.data, spec.freqs

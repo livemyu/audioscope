@@ -45,3 +45,9 @@ def _mag(y: np.ndarray, sr: int) -> tuple[np.ndarray, np.ndarray]:
     spec = aus.spectrogram(y, sr, n_fft=1024, hop_length=256, power=1.0)
     assert spec.freqs is not None
     return spec.data, spec.freqs
+
+
+def test_spectral_centroid_tracks_frequency() -> None:
+    low, freqs = _mag(aus.tone(200.0, sr=8000, duration=1.0), 8000)
+    high, _ = _mag(aus.tone(3000.0, sr=8000, duration=1.0), 8000)
+    assert spectral_centroid(high, freqs).mean() > spectral_centroid(low, freqs).mean()

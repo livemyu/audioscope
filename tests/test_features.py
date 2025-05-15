@@ -51,3 +51,9 @@ def test_spectral_centroid_tracks_frequency() -> None:
     low, freqs = _mag(aus.tone(200.0, sr=8000, duration=1.0), 8000)
     high, _ = _mag(aus.tone(3000.0, sr=8000, duration=1.0), 8000)
     assert spectral_centroid(high, freqs).mean() > spectral_centroid(low, freqs).mean()
+
+
+def test_spectral_rolloff_within_nyquist() -> None:
+    data, freqs = _mag(aus.tone(1000.0, sr=8000, duration=1.0), 8000)
+    rolloff = spectral_rolloff(data, freqs)
+    assert np.all(rolloff <= 4000.0)

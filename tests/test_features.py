@@ -57,3 +57,16 @@ def test_spectral_rolloff_within_nyquist() -> None:
     data, freqs = _mag(aus.tone(1000.0, sr=8000, duration=1.0), 8000)
     rolloff = spectral_rolloff(data, freqs)
     assert np.all(rolloff <= 4000.0)
+
+
+def test_spectral_flatness_noise_vs_tone() -> None:
+    rng = np.random.default_rng(1)
+    noise = rng.standard_normal(8000) * 0.1
+    tone_mag, _ = _mag(aus.tone(440.0, sr=8000, duration=1.0), 8000)
+    noise_mag, _ = _mag(noise, 8000)
+    assert spectral_flatness(noise_mag).mean() > spectral_flatness(tone_mag).mean()
+
+
+def test_spectral_bandwidth_nonneg() -> None:
+    data, freqs = _mag(aus.tone(440.0, sr=8000, duration=0.5), 8000)
+    assert np.all(spectral_bandwidth(data, freqs) >= 0)

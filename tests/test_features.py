@@ -70,3 +70,8 @@ def test_spectral_flatness_noise_vs_tone() -> None:
 def test_spectral_bandwidth_nonneg() -> None:
     data, freqs = _mag(aus.tone(440.0, sr=8000, duration=0.5), 8000)
     assert np.all(spectral_bandwidth(data, freqs) >= 0)
+
+
+def test_spectral_centroid_shape_mismatch() -> None:
+    with pytest.raises(InvalidParameterError):
+        spectral_centroid(np.zeros((5, 3)), np.zeros(4))

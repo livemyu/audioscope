@@ -39,3 +39,31 @@ def read_wav(path: str | Path) -> tuple[FloatArray, int]:
     if n_channels > 1:
         return np.asarray(mono.reshape(-1, n_channels).T, dtype=np.float64), int(sr)
     return np.asarray(mono, dtype=np.float64), int(sr)
+
+
+def write_wav(path: str | Path, y: np.ndarray, sr: int, *, sampwidth: int = 2) -> None:
+    """把浮点信号写成 16 位（默认）PCM WAV。"""
+    if sampwidth != 2:
+        raise UnsupportedFormatError("write_wav 目前只支持 16 位输出")
+    if sr <= 0:
+        raise InvalidParameterError("采样率必须为正")
+    arr = np.asarray(y, dtype=np.float64)
+    if arr.ndim == 1:
+        n_channels = 1
+        interleaved = arr
+    elif arr.ndim == 2:
+        n_channels = arr.shape[0]
+        interleaved = arr.T.reshape(-1)
+    else:
+        raise InvalidParameterError("只支持一维或二维（channels, n）信号")
+
+    clipped = np.clip(interleaved, -1.0, 1.0)
+    pcm = np.round(clipped * 32767.0).astype(np.int16)
+    with wave.open(str(path), "wb") as wav:
+        wav.setnchannels(n_channels)
+        wav.setsampwidth(2)
+        wav.setframerate(int(sr))
+        wav.writeframes(pcm.tobytes())
+
+
+__all__ = ["read_wav", "write_wav"]

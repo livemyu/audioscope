@@ -29,3 +29,12 @@ def test_wav_roundtrip_stereo(tmp_path: Path) -> None:
     write_wav(path, stereo, 8000)
     back, _ = read_wav(path)
     assert back.shape == (2, left.size)
+
+
+def test_load_returns_signal(tmp_path: Path) -> None:
+    y = aus.tone(440.0, sr=8000, duration=0.25)
+    path = tmp_path / "a.wav"
+    write_wav(path, y, 8000)
+    sig = load(path)
+    assert isinstance(sig, aus.Signal)
+    assert sig.sr == 8000

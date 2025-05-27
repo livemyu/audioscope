@@ -38,3 +38,12 @@ def test_load_returns_signal(tmp_path: Path) -> None:
     sig = load(path)
     assert isinstance(sig, aus.Signal)
     assert sig.sr == 8000
+
+
+def test_load_with_resample(tmp_path: Path) -> None:
+    y = aus.tone(440.0, sr=8000, duration=0.5)
+    path = tmp_path / "a.wav"
+    write_wav(path, y, 8000)
+    sig = load(path, sr=16000)
+    assert sig.sr == 16000
+    assert abs(sig.n_samples - 2 * y.size) <= 4

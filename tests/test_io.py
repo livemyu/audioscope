@@ -47,3 +47,8 @@ def test_load_with_resample(tmp_path: Path) -> None:
     sig = load(path, sr=16000)
     assert sig.sr == 16000
     assert abs(sig.n_samples - 2 * y.size) <= 4
+
+
+def test_write_wav_rejects_non16bit(tmp_path: Path) -> None:
+    with pytest.raises(UnsupportedFormatError):
+        write_wav(tmp_path / "x.wav", np.zeros(10), 8000, sampwidth=3)

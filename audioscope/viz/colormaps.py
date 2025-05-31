@@ -44,3 +44,28 @@ _ANCHORS: dict[str, list[tuple[float, float, float]]] = {
 def available_colormaps() -> list[str]:
     """返回所有内置 colormap 的名字。"""
     return sorted(_ANCHORS)
+
+
+def get_colormap(name: str = "magma", n: int = 256) -> RGBArray:
+    """把某个 colormap 插值成 ``(n, 3)`` 的 uint8 查找表。"""
+    if name not in _ANCHORS:
+        raise InvalidParameterError(f"未知 colormap：{name!r}，可选 {available_colormaps()}")
+    if n <= 0:
+        raise InvalidParameterError("n 必须为正")
+    anchors = np.asarray(_ANCHORS[name], dtype=np.float64)
+    xp = np.linspace(0.0, 1.0, anchors.shape[0])
+    x = np.linspace(0.0, 1.0, n)
+    channels = [np.interp(x, xp, anchors[:, c]) for c in range(3)]
+    table = np.stack(channels, axis=1)
+    return np.asarray(np.clip(table * 255.0, 0, 255).round(), dtype=np.uint8)
+
+
+def apply_colormap(values: np.ndarray, name: str = "magma") -> RGBArray:
+    """把归一化到 ``[0, 1]`` 的数组映射成 RGB 图像 ``(..., 3)`` uint8。"""
+    arr = np.clip(np.asarray(values, dtype=np.float64), 0.0, 1.0)
+    table = get_colormap(name, 256)
+    idx = np.asarray(arr * 255.0, dtype=np.int64)
+    return np.asarray(table[idx], dtype=np.uint8)
+
+
+__all__ = ["apply_colormap", "available_colormaps", "get_colormap"]

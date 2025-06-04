@@ -30,3 +30,8 @@ def test_apply_colormap_shape() -> None:
 def test_apply_colormap_endpoints_differ() -> None:
     rgb = apply_colormap(np.array([[0.0, 1.0]]), "magma")
     assert not np.array_equal(rgb[0, 0], rgb[0, 1])
+
+
+def test_unknown_colormap_raises() -> None:
+    with pytest.raises(InvalidParameterError):
+        get_colormap("does-not-exist")

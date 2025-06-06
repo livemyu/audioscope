@@ -50,3 +50,18 @@ def heatmap(
     levels = np.asarray(norm * (len(chars) - 1), dtype=np.int64)
     rows = ["".join(chars[v] for v in row) for row in levels]
     return "\n".join(reversed(rows))
+
+
+def sparkline(y: np.ndarray, *, width: int = 80) -> str:
+    """把一维序列压缩成单行 sparkline。"""
+    arr = np.asarray(y, dtype=np.float64)
+    if arr.ndim != 1:
+        raise InvalidParameterError("sparkline 需要一维数组")
+    if arr.size == 0:
+        return ""
+    if arr.size > width:
+        idx = np.linspace(0, arr.size - 1, width).round().astype(np.int64)
+        arr = arr[idx]
+    norm = _normalize(arr)
+    levels = np.asarray(norm * (len(_BARS) - 1), dtype=np.int64)
+    return "".join(_BARS[v] for v in levels)

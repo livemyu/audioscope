@@ -65,3 +65,27 @@ def sparkline(y: np.ndarray, *, width: int = 80) -> str:
     norm = _normalize(arr)
     levels = np.asarray(norm * (len(_BARS) - 1), dtype=np.int64)
     return "".join(_BARS[v] for v in levels)
+
+
+def waveform(y: np.ndarray, *, width: int = 80, height: int = 9) -> str:
+    """把波形画成以中线为零点的对称柱状图。"""
+    arr = np.asarray(y, dtype=np.float64)
+    if arr.ndim != 1:
+        raise InvalidParameterError("waveform 需要一维数组")
+    if height % 2 == 0:
+        height += 1
+    if arr.size > width:
+        idx = np.linspace(0, arr.size - 1, width).round().astype(np.int64)
+        arr = arr[idx]
+    peak = float(np.max(np.abs(arr))) or 1.0
+    mid = height // 2
+    scaled = np.asarray(arr / peak * mid, dtype=np.int64)
+    grid = [[" "] * len(arr) for _ in range(height)]
+    for x, value in enumerate(scaled):
+        step = 1 if value >= 0 else -1
+        for level in range(0, value + step, step):
+            grid[mid - level][x] = "█"
+    return "\n".join("".join(row) for row in grid)
+
+
+__all__ = ["DENSITY_CHARS", "heatmap", "sparkline", "waveform"]

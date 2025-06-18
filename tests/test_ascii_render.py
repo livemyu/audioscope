@@ -25,3 +25,13 @@ def test_heatmap_rejects_1d() -> None:
 def test_sparkline_length() -> None:
     y = aus.tone(5.0, sr=100, duration=1.0)
     assert len(sparkline(y, width=40)) == 40
+
+
+def test_sparkline_empty() -> None:
+    assert sparkline(np.zeros(0)) == ""
+
+
+def test_waveform_forces_odd_height() -> None:
+    y = aus.tone(5.0, sr=100, duration=1.0)
+    art = waveform(y, width=30, height=8)
+    assert len(art.splitlines()) == 9  # 偶数高度会 +1

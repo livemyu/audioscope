@@ -20,3 +20,8 @@ def test_heatmap_dimensions() -> None:
 def test_heatmap_rejects_1d() -> None:
     with pytest.raises(InvalidParameterError):
         heatmap(np.zeros(10))
+
+
+def test_sparkline_length() -> None:
+    y = aus.tone(5.0, sr=100, duration=1.0)
+    assert len(sparkline(y, width=40)) == 40

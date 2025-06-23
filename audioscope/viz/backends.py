@@ -24,3 +24,17 @@ def available_backends() -> list[str]:
     if has_matplotlib():
         backends.append("matplotlib")
     return backends
+
+
+def require_matplotlib() -> Any:
+    """导入并返回 ``matplotlib.pyplot``，不可用时抛出友好错误。"""
+    if not has_matplotlib():
+        raise BackendNotAvailableError(
+            "该功能需要 matplotlib，请先安装：pip install 'audioscope[plot]'"
+        )
+    import matplotlib.pyplot as plt
+
+    return plt
+
+
+__all__ = ["available_backends", "has_matplotlib", "require_matplotlib"]

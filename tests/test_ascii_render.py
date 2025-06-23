@@ -35,3 +35,8 @@ def test_waveform_forces_odd_height() -> None:
     y = aus.tone(5.0, sr=100, duration=1.0)
     art = waveform(y, width=30, height=8)
     assert len(art.splitlines()) == 9  # 偶数高度会 +1
+
+
+def test_waveform_rejects_2d() -> None:
+    with pytest.raises(InvalidParameterError):
+        waveform(np.zeros((2, 10)))

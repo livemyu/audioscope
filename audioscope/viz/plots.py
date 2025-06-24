@@ -47,3 +47,27 @@ def plot_spectrogram(
     ax.set_ylabel("频率 bin")
     ax.set_title(f"{spec.kind} 谱")
     return ax
+
+
+def plot_mel(spec: Spectrogram, *, ax: Any = None, cmap: str = "magma") -> Any:
+    """绘制梅尔声谱图（默认转分贝）。"""
+    ax = plot_spectrogram(spec, ax=ax, cmap=cmap, db=True)
+    ax.set_ylabel("梅尔带")
+    return ax
+
+
+def plot_chroma(spec: Spectrogram, *, ax: Any = None, cmap: str = "magma") -> Any:
+    """绘制色度图，并在纵轴标注音名。"""
+    plt = require_matplotlib()
+    if ax is None:
+        _, ax = plt.subplots()
+    ax.imshow(spec.data, origin="lower", aspect="auto", cmap=cmap)
+    if spec.bin_labels is not None:
+        ax.set_yticks(range(len(spec.bin_labels)))
+        ax.set_yticklabels(list(spec.bin_labels))
+    ax.set_xlabel("帧")
+    ax.set_title("色度")
+    return ax
+
+
+__all__ = ["plot_chroma", "plot_mel", "plot_spectrogram", "plot_waveform"]

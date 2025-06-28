@@ -47,3 +47,31 @@ class Browser:
     def view(self) -> FloatArray:
         """返回当前视口内的数据切片。"""
         return self.spec.data[:, self.start : self.stop]
+
+    def next(self, step: int | None = None) -> Browser:
+        """向后滚动，默认滚动一个视口宽度。"""
+        delta = self.window if step is None else step
+        max_start = max(0, self.spec.n_frames - self.window)
+        self.start = min(self.start + delta, max_start)
+        return self
+
+    def prev(self, step: int | None = None) -> Browser:
+        """向前滚动。"""
+        delta = self.window if step is None else step
+        self.start = max(0, self.start - delta)
+        return self
+
+    def seek(self, time: float) -> Browser:
+        """把视口起点定位到第 ``time`` 秒附近。"""
+        frame = round(time * self.spec.sr / self.spec.hop_length)
+        max_start = max(0, self.spec.n_frames - self.window)
+        self.start = min(max(0, frame), max_start)
+        return self
+
+    def zoom(self, factor: float) -> Browser:
+        """缩放视口宽度，``factor < 1`` 放大细节，``> 1`` 看得更宽。"""
+        if factor <= 0:
+            raise InvalidParameterError("factor 必须为正")
+        new_window = round(self.window * factor)
+        self.window = max(1, min(new_window, self.spec.n_frames))
+        return self

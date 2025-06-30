@@ -75,3 +75,14 @@ class Browser:
         new_window = round(self.window * factor)
         self.window = max(1, min(new_window, self.spec.n_frames))
         return self
+
+    def render(self, *, width: int = 80, height: int = 20) -> str:
+        """把当前视口渲染成 ASCII 热力图。"""
+        return heatmap(self.view(), width=width, height=height)
+
+    def __repr__(self) -> str:
+        t0, t1 = self.time_range
+        return f"Browser(frames={self.start}..{self.stop}, time={t0:.2f}..{t1:.2f}s)"
+
+
+__all__ = ["Browser"]

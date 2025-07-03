@@ -25,3 +25,10 @@ def test_browser_next_prev_are_bounded() -> None:
     assert browser.stop <= spec.n_frames
     browser.prev(10_000)
     assert browser.start == 0
+
+
+def test_browser_seek_and_time_range() -> None:
+    browser = aus.Browser(_spec(), window=10)
+    browser.seek(1.0)
+    t0, t1 = browser.time_range
+    assert t0 <= 1.0 <= t1

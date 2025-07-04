@@ -32,3 +32,14 @@ def test_browser_seek_and_time_range() -> None:
     browser.seek(1.0)
     t0, t1 = browser.time_range
     assert t0 <= 1.0 <= t1
+
+
+def test_browser_zoom_changes_window() -> None:
+    browser = aus.Browser(_spec(), window=20)
+    browser.zoom(0.5)
+    assert browser.window == 10
+
+
+def test_browser_zoom_rejects_nonpositive() -> None:
+    with pytest.raises(InvalidParameterError):
+        aus.Browser(_spec()).zoom(0.0)

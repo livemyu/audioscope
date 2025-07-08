@@ -48,3 +48,10 @@ def test_browser_zoom_rejects_nonpositive() -> None:
 def test_browser_render_lines() -> None:
     art = aus.Browser(_spec(), window=20).render(width=40, height=10)
     assert len(art.splitlines()) == 10
+
+
+def test_browser_from_signal() -> None:
+    sig = aus.Signal(aus.tone(440.0, sr=8000, duration=1.0), 8000)
+    browser = aus.Browser.from_signal(sig, window=15, n_fft=512, hop_length=128, n_mels=16)
+    assert browser.spec.kind == "mel"
+    assert isinstance(browser.render(), str)

@@ -43,3 +43,8 @@ def test_browser_zoom_changes_window() -> None:
 def test_browser_zoom_rejects_nonpositive() -> None:
     with pytest.raises(InvalidParameterError):
         aus.Browser(_spec()).zoom(0.0)
+
+
+def test_browser_render_lines() -> None:
+    art = aus.Browser(_spec(), window=20).render(width=40, height=10)
+    assert len(art.splitlines()) == 10

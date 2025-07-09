@@ -55,3 +55,7 @@ def test_browser_from_signal() -> None:
     browser = aus.Browser.from_signal(sig, window=15, n_fft=512, hop_length=128, n_mels=16)
     assert browser.spec.kind == "mel"
     assert isinstance(browser.render(), str)
+
+
+def test_browser_repr() -> None:
+    assert "Browser" in repr(aus.Browser(_spec()))

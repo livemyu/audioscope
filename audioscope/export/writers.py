@@ -57,3 +57,17 @@ def _normalize(data: np.ndarray) -> FloatArray:
     hi = float(np.max(data))
     norm = np.zeros_like(data) if hi - lo < 1e-12 else (data - lo) / (hi - lo)
     return np.asarray(norm, dtype=np.float64)
+
+
+def save_image(
+    spec: Spectrogram,
+    path: str | Path,
+    *,
+    cmap: str = "magma",
+    db: bool = True,
+) -> None:
+    """把声谱图上色后导出为 PNG（低频在下）。"""
+    data = power_to_db(spec.data) if db else spec.data
+    norm = _normalize(data)
+    rgb = apply_colormap(norm, cmap)
+    write_png(np.flipud(rgb), path)

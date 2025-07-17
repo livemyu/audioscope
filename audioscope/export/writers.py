@@ -71,3 +71,26 @@ def save_image(
     norm = _normalize(data)
     rgb = apply_colormap(norm, cmap)
     write_png(np.flipud(rgb), path)
+
+
+def save_npz(spec: Spectrogram, path: str | Path) -> None:
+    """把谱数据及关键元信息保存为 ``.npz``。"""
+    np.savez(
+        path,
+        data=spec.data,
+        sr=np.asarray(spec.sr),
+        hop_length=np.asarray(spec.hop_length),
+        n_fft=np.asarray(spec.n_fft),
+        kind=np.asarray(spec.kind),
+    )
+
+
+def save_csv(data: np.ndarray, path: str | Path, *, delimiter: str = ",") -> None:
+    """把二维数组保存为 CSV。"""
+    arr = np.asarray(data, dtype=np.float64)
+    if arr.ndim != 2:
+        raise InvalidParameterError("save_csv 需要二维数组")
+    np.savetxt(path, arr, delimiter=delimiter, fmt="%.6g")
+
+
+__all__ = ["save_csv", "save_image", "save_npz", "write_png"]

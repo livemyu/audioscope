@@ -40,3 +40,8 @@ def test_write_png_pixels_are_decodable(tmp_path: Path) -> None:
     length = struct.unpack(">I", raw[idat_start - 8 : idat_start - 4])[0]
     decompressed = zlib.decompress(raw[idat_start : idat_start + length])
     assert len(decompressed) == 4 * (1 + 4 * 3)
+
+
+def test_write_png_rejects_bad_shape(tmp_path: Path) -> None:
+    with pytest.raises(InvalidParameterError):
+        write_png(np.zeros((4, 4), dtype=np.uint8), tmp_path / "bad.png")

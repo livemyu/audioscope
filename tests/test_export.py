@@ -45,3 +45,10 @@ def test_write_png_pixels_are_decodable(tmp_path: Path) -> None:
 def test_write_png_rejects_bad_shape(tmp_path: Path) -> None:
     with pytest.raises(InvalidParameterError):
         write_png(np.zeros((4, 4), dtype=np.uint8), tmp_path / "bad.png")
+
+
+def test_save_image(tmp_path: Path) -> None:
+    spec = aus.melspectrogram(aus.tone(440.0, sr=8000, duration=0.5), 8000, n_mels=16)
+    path = tmp_path / "mel.png"
+    save_image(spec, path)
+    assert path.exists() and path.stat().st_size > 0

@@ -52,3 +52,12 @@ def test_save_image(tmp_path: Path) -> None:
     path = tmp_path / "mel.png"
     save_image(spec, path)
     assert path.exists() and path.stat().st_size > 0
+
+
+def test_save_npz(tmp_path: Path) -> None:
+    spec = aus.spectrogram(aus.tone(440.0, sr=8000, duration=0.5), 8000)
+    path = tmp_path / "spec.npz"
+    save_npz(spec, path)
+    loaded = np.load(path)
+    assert "data" in loaded
+    assert loaded["data"].shape == spec.shape

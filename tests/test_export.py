@@ -61,3 +61,10 @@ def test_save_npz(tmp_path: Path) -> None:
     loaded = np.load(path)
     assert "data" in loaded
     assert loaded["data"].shape == spec.shape
+
+
+def test_save_csv(tmp_path: Path) -> None:
+    data = np.arange(12, dtype=np.float64).reshape(3, 4)
+    path = tmp_path / "data.csv"
+    save_csv(data, path)
+    assert np.loadtxt(path, delimiter=",").shape == (3, 4)

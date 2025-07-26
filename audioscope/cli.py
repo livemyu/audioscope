@@ -54,3 +54,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="要执行的操作",
     )
     return parser
+
+
+def _load_signal(args: argparse.Namespace) -> Signal:
+    if args.tone is not None:
+        return Signal(tone(args.tone, sr=args.sr, duration=args.duration), args.sr)
+    if args.chirp is not None:
+        f0, f1 = args.chirp
+        return Signal(chirp(f0, f1, sr=args.sr, duration=args.duration), args.sr)
+    if args.input:
+        return load(args.input)
+    raise AudioscopeError("请提供 WAV 文件，或使用 --tone / --chirp 合成信号")
+
+
+def _emit(spec: Spectrogram, args: argparse.Namespace) -> None:
+    if args.output and args.output.endswith(".png"):
+        from .export.writers import save_image
+
+        save_image(spec, args.output, cmap=args.cmap)
+        print(f"已导出 {args.output}")
+        return
+    print(heatmap(power_to_db(spec.data), width=args.width, height=args.height))

@@ -75,3 +75,36 @@ def _emit(spec: Spectrogram, args: argparse.Namespace) -> None:
         print(f"已导出 {args.output}")
         return
     print(heatmap(power_to_db(spec.data), width=args.width, height=args.height))
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """CLI 主函数，返回进程退出码。"""
+    args = build_parser().parse_args(argv)
+    try:
+        signal = _load_signal(args)
+        if args.command == "info":
+            print(f"采样率: {signal.sr} Hz")
+            print(f"样本数: {signal.n_samples}")
+            print(f"时长:   {signal.duration:.3f} s")
+        elif args.command == "waveform":
+            print(waveform(signal.samples, width=args.width, height=9))
+            print(sparkline(signal.samples, width=args.width))
+        elif args.command == "spectrogram":
+            spec = spectrogram(signal, n_fft=args.n_fft, hop_length=args.hop_length)
+            _emit(spec, args)
+        elif args.command == "mel":
+            spec = melspectrogram(
+                signal, n_fft=args.n_fft, hop_length=args.hop_length, n_mels=args.n_mels
+            )
+            _emit(spec, args)
+        elif args.command == "chroma":
+            spec = chroma(signal, n_fft=args.n_fft, hop_length=args.hop_length)
+            _emit(spec, args)
+    except AudioscopeError as exc:
+        print(f"错误: {exc}")
+        return 1
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())

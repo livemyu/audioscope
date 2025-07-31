@@ -21,3 +21,7 @@ def test_cli_waveform() -> None:
 @pytest.mark.parametrize("command", ["spectrogram", "mel", "chroma"])
 def test_cli_spectral_commands(command: str) -> None:
     assert main(["--tone", "440", "--duration", "0.5", command]) == 0
+
+
+def test_cli_chirp_source() -> None:
+    assert main(["--chirp", "200", "2000", "--duration", "0.5", "spectrogram"]) == 0

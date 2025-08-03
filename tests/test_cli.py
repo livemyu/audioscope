@@ -25,3 +25,8 @@ def test_cli_spectral_commands(command: str) -> None:
 
 def test_cli_chirp_source() -> None:
     assert main(["--chirp", "200", "2000", "--duration", "0.5", "spectrogram"]) == 0
+
+
+def test_cli_missing_input_returns_error(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["info"]) == 1
+    assert "错误" in capsys.readouterr().out

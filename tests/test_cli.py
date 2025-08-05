@@ -30,3 +30,11 @@ def test_cli_chirp_source() -> None:
 def test_cli_missing_input_returns_error(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["info"]) == 1
     assert "错误" in capsys.readouterr().out
+
+
+def test_cli_export_png(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    out = tmp_path / "mel.png"
+    code = main(["--tone", "440", "--duration", "0.5", "-o", str(out), "mel"])
+    assert code == 0
+    assert out.exists()
+    assert "已导出" in capsys.readouterr().out

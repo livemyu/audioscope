@@ -24,3 +24,16 @@ from .core.convert import (
 from .core.mel import mel_filterbank, melspectrogram
 from .core.spectrogram import spectrogram
 from .core.stft import istft, stft
+from .exceptions import (
+    AudioscopeError,
+    BackendNotAvailableError,
+    InvalidParameterError,
+    UnsupportedFormatError,
+)
+from .features.spectral import (
+    spectral_bandwidth,
+    spectral_centroid,
+    spectral_flatness,
+    spectral_rolloff,
+)
+from .features.time_domain import amplitude_envelope, rms, zero_crossing_rate

@@ -25,3 +25,8 @@ def test_public_api_surface() -> None:
         "heatmap",
     }
     assert expected.issubset(set(aus.__all__))
+
+
+def test_all_names_are_importable() -> None:
+    for name in aus.__all__:
+        assert hasattr(aus, name), name

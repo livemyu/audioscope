@@ -53,3 +53,13 @@ audioscope/
 2. **viz 内部再分层。** `ascii_render` 与 `colormaps` 零第三方依赖；
    `plots` 才依赖 matplotlib，且为惰性导入。
 3. **export 不依赖 matplotlib。** PNG 通过内置编码器写出，契合“离线可跑”。
+
+## 关键类型
+
+- `Signal`：一维 `float64` 波形 + 采样率，不可变。
+- `Spectrogram`：`(n_bins, n_frames)` 的二维数组 + 元信息（`sr` / `hop_length`
+  / `n_fft` / `kind` / 可选 `freqs` 与 `bin_labels`）。
+
+两者都是 `frozen` dataclass 且关闭了自动 `__eq__`（数组无法安全比较）。
+
+更细的取舍见[设计笔记](./design-notes.md)。

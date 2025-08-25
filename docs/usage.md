@@ -59,3 +59,32 @@ from audioscope.viz import plot_mel
 plot_mel(mel)
 plt.show()
 ```
+
+## 交互式浏览
+
+```python
+from audioscope import Browser
+
+browser = Browser.from_signal(sig, window=120)
+print(browser.render())          # 当前视口的 ASCII 热力图
+browser.next().render()          # 向后翻一页
+browser.seek(5.0).zoom(0.5)      # 定位到第 5 秒并放大
+```
+
+## 导出
+
+```python
+from audioscope.export import save_image, save_npz, save_csv
+
+save_image(mel, "mel.png", cmap="magma")   # 内置 PNG 编码器，无需 matplotlib
+save_npz(mel, "mel.npz")
+save_csv(mel.data, "mel.csv")
+```
+
+## 命令行
+
+```bash
+audioscope --tone 440 --duration 2 mel                 # 终端里的梅尔谱
+audioscope --chirp 200 4000 -o sweep.png spectrogram   # 导出扫频声谱图
+audioscope recording.wav info                          # 打印音频信息
+```

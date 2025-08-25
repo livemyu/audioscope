@@ -51,3 +51,18 @@ librosa 的色度滤波器组用了对数频率上的高斯加权和倍频程窗
 自动生成的 `__eq__` 会对数组做 `==`，得到布尔数组，再取真值时报
 “ambiguous truth value”。与其埋雷，不如显式 `eq=False`，需要比较时由调用方
 用 `np.allclose` 决定语义。
+
+## 类型策略
+
+- 对外函数一律加类型标注，`mypy` 以 `warn_return_any` 等较严格选项运行。
+- numpy 的很多算子在类型上返回 `Any`，因此约定“返回前用
+  `np.asarray(..., dtype=...)` 收口”，既保证 dtype 又消除 `Any`。
+- SciPy / matplotlib 的存根不全，统一 `ignore_missing_imports`。
+- CI 在 3.10 / 3.11 / 3.12 各自的 numpy 上跑 mypy，因为不同 numpy 版本的
+  存根对数组形状的推断不一样（例如 `np.zeros(n)` 的秩），必须逐版本验证。
+
+## 待办
+
+- [ ] 常数 Q 变换（CQT）与对数频率谱。
+- [ ] `Browser` 支持波形/声谱双视图联动。
+- [ ] MP3/FLAC 读取（需可选后端，保持核心离线）。

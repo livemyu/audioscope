@@ -47,3 +47,31 @@
 
 - `Browser(spec, *, window=100)` — 方法 `next` / `prev` / `seek` / `zoom` /
   `render`；类方法 `Browser.from_signal(signal, *, window=100, **kwargs)`。
+
+## 子模块
+
+### `audioscope.core`
+
+`frame`、`pad_center`、`get_window`、`stft_frequencies`、`mel_filterbank`、
+`mel_frequencies`、`chroma_filterbank`、`resample`。
+
+### `audioscope.viz`
+
+`plot_waveform`、`plot_spectrogram`、`plot_mel`、`plot_chroma`（需 matplotlib）；
+`get_colormap`、`apply_colormap`、`available_colormaps`；
+`available_backends`、`has_matplotlib`。
+
+### `audioscope.export`
+
+`save_image`、`save_npz`、`save_csv`、`write_png`。
+
+### `audioscope.io`
+
+`load`、`read_wav`、`write_wav`。
+
+## 异常
+
+- `AudioscopeError` — 基类
+- `InvalidParameterError`（同时是 `ValueError`）
+- `UnsupportedFormatError`
+- `BackendNotAvailableError`（同时是 `RuntimeError`）

@@ -18,3 +18,39 @@
 pip install audioscope          # 仅核心（numpy + scipy）
 pip install "audioscope[plot]"  # 额外启用 matplotlib 后端
 ```
+
+## 快速上手
+
+```python
+import audioscope as aus
+
+# 合成一个 440Hz 的纯音（也可以用 aus.load("xxx.wav")）
+sig = aus.Signal(aus.tone(440, sr=22050, duration=1.0), 22050)
+
+# 梅尔声谱图
+mel = aus.melspectrogram(sig, n_fft=1024, hop_length=256, n_mels=64)
+
+# 不装任何绘图库，直接在终端里看
+print(aus.heatmap(aus.power_to_db(mel.data), width=80, height=16))
+```
+
+命令行同样开箱即用（无需音频文件）：
+
+```bash
+audioscope --tone 440 --duration 2 mel
+audioscope --chirp 200 4000 -o sweep.png spectrogram
+```
+
+## 功能一览
+
+| 模块 | 内容 |
+| --- | --- |
+| `audioscope.core` | 分帧、窗函数、STFT/iSTFT、声谱、梅尔、色度、单位换算、重采样 |
+| `audioscope.features` | RMS、过零率、包络、谱质心 / 带宽 / 滚降 / 平坦度 |
+| `audioscope.viz` | ASCII 热力图 / sparkline / 波形、颜色表、matplotlib 后端 |
+| `audioscope.interactive` | `Browser` 交互式视口 |
+| `audioscope.export` | `.npz` / `.csv` / `.png`（内置 PNG 编码器）导出 |
+
+更多内容见 [`docs/`](./docs)：[架构](./docs/architecture.md) ·
+[用法](./docs/usage.md) · [设计笔记](./docs/design-notes.md) ·
+[API 参考](./docs/api-reference.md)。

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "audioscope"
-version = "0.1.0"
+version = "0.2.0"
 description = "音频可视化工具包：波形 / 短时傅里叶谱 / 梅尔谱 / 色度 / 声谱图，支持交互式浏览与离线导出"
 readme = "README.md"
 requires-python = ">=3.10"

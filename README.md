@@ -54,3 +54,16 @@ audioscope --chirp 200 4000 -o sweep.png spectrogram
 更多内容见 [`docs/`](./docs)：[架构](./docs/architecture.md) ·
 [用法](./docs/usage.md) · [设计笔记](./docs/design-notes.md) ·
 [API 参考](./docs/api-reference.md)。
+
+## 开发
+
+```bash
+uv sync --extra dev
+uv run ruff check .
+uv run mypy
+uv run pytest
+```
+
+## 许可
+
+[MIT](./LICENSE) © Huang Yu

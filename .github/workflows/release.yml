@@ -33,7 +33,7 @@ jobs:
     permissions:
       id-token: write  # PyPI 可信发布（trusted publishing）
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist

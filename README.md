@@ -1,5 +1,5 @@
 # audioscope
-
+“本仓库主要作为内部/特定环境自动化部署与二次开发的基准模板（Base Template），支持多节点快速 Fork 与定制。”
 [![CI](https://github.com/livemyu/audioscope/actions/workflows/ci.yml/badge.svg)](https://github.com/livemyu/audioscope/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)

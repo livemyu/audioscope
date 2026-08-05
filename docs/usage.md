@@ -12,8 +12,8 @@ pip install "audioscope[plot]"  # 追加 matplotlib 后端
 ```python
 import audioscope as aus
 
-sig = aus.load("piano.wav")                 # 从 WAV 文件
-sig = aus.load("piano.wav", sr=16000)       # 载入时重采样
+sig = aus.load("piano.wav")  # 从 WAV 文件
+sig = aus.load("piano.wav", sr=16000)  # 载入时重采样
 tone = aus.Signal(aus.tone(440.0, sr=22050, duration=1.0), 22050)  # 合成纯音
 ```
 
@@ -22,11 +22,11 @@ tone = aus.Signal(aus.tone(440.0, sr=22050, duration=1.0), 22050)  # 合成纯�
 ## 时频变换
 
 ```python
-S = aus.stft(sig.samples, n_fft=2048, hop_length=512)   # 复数谱 (1+n_fft//2, 帧)
+S = aus.stft(sig.samples, n_fft=2048, hop_length=512)  # 复数谱 (1+n_fft//2, 帧)
 spec = aus.spectrogram(sig, n_fft=2048, hop_length=512)  # 功率谱 Spectrogram
-mel = aus.melspectrogram(sig, n_mels=128)                # 梅尔谱
-chr = aus.chroma(sig)                                    # 色度 (12, 帧)
-y = aus.istft(S, hop_length=512)                         # 逆变换重建波形
+mel = aus.melspectrogram(sig, n_mels=128)  # 梅尔谱
+chr = aus.chroma(sig)  # 色度 (12, 帧)
+y = aus.istft(S, hop_length=512)  # 逆变换重建波形
 ```
 
 ## 特征
@@ -66,9 +66,9 @@ plt.show()
 from audioscope import Browser
 
 browser = Browser.from_signal(sig, window=120)
-print(browser.render())          # 当前视口的 ASCII 热力图
-browser.next().render()          # 向后翻一页
-browser.seek(5.0).zoom(0.5)      # 定位到第 5 秒并放大
+print(browser.render())  # 当前视口的 ASCII 热力图
+browser.next().render()  # 向后翻一页
+browser.seek(5.0).zoom(0.5)  # 定位到第 5 秒并放大
 ```
 
 ## 导出
@@ -76,7 +76,7 @@ browser.seek(5.0).zoom(0.5)      # 定位到第 5 秒并放大
 ```python
 from audioscope.export import save_image, save_npz, save_csv
 
-save_image(mel, "mel.png", cmap="magma")   # 内置 PNG 编码器，无需 matplotlib
+save_image(mel, "mel.png", cmap="magma")  # 内置 PNG 编码器，无需 matplotlib
 save_npz(mel, "mel.npz")
 save_csv(mel.data, "mel.csv")
 ```

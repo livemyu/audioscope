@@ -76,7 +76,7 @@ module = ["scipy.*", "matplotlib.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-minversion = "7.0"
+minversion = "6.0"
 testpaths = ["tests"]
 addopts = "-ra -q"
 

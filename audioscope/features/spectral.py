@@ -63,7 +63,7 @@ def spectral_flatness(spec: np.ndarray, *, amin: float = 1e-10) -> FloatArray:
         raise InvalidParameterError("频谱 S 必须是二维数组")
     s = np.maximum(s, amin)
     geometric = np.exp(np.mean(np.log(s), axis=0))
-    arithmetic = np.mean(s, axis=0)
+    arithmetic = np.maximum(np.mean(s, axis=0), np.finfo(np.float64).eps)
     return np.asarray(geometric / arithmetic, dtype=np.float64)
 
 

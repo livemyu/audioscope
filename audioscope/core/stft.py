@@ -96,10 +96,9 @@ def istft(
     y: FloatArray = np.zeros(expected, dtype=np.float64)
     win_sum = np.zeros(expected, dtype=np.float64)
     win_sq = win * win
-    for i in range(n_frames):
-        start = i * hop_length
-        y[start : start + n_fft] += frames[:, i] * win
-        win_sum[start : start + n_fft] += win_sq
+    idx = np.arange(n_fft)[:, np.newaxis] + np.arange(n_frames) * hop_length
+    np.add.at(y, idx, frames * win[:, np.newaxis])
+    np.add.at(win_sum, idx, win_sq[:, np.newaxis])
 
     nonzero = win_sum > 1e-8
     y[nonzero] /= win_sum[nonzero]

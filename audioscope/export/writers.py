@@ -37,16 +37,15 @@ def write_png(rgb: np.ndarray, path: str | Path) -> None:
         raise InvalidParameterError("write_png 需要形状为 (H, W, 3) 的数组")
     height, width, _ = arr.shape
 
-    raw = bytearray()
-    for row in arr:
-        raw.append(0)  # 每行的过滤类型：None
-        raw.extend(row.tobytes())
+    filter_bytes = np.zeros((height, 1), dtype=np.uint8)
+    raw_arr = np.hstack((filter_bytes, arr.reshape(height, width * 3)))
+    raw_data = raw_arr.tobytes()
 
     ihdr = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
     png = (
         _PNG_SIGNATURE
         + _png_chunk(b"IHDR", ihdr)
-        + _png_chunk(b"IDAT", zlib.compress(bytes(raw), 9))
+        + _png_chunk(b"IDAT", zlib.compress(raw_data, 9))
         + _png_chunk(b"IEND", b"")
     )
     Path(path).write_bytes(png)

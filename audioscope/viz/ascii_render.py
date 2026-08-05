@@ -18,9 +18,21 @@ _BARS = "▁▂▃▄▅▆▇█"
 
 
 def _resize(data: np.ndarray, height: int, width: int) -> np.ndarray:
-    """用最近邻把二维数组缩放到 ``(height, width)``。"""
-    rows = np.linspace(0, data.shape[0] - 1, height).round().astype(np.int64)
-    cols = np.linspace(0, data.shape[1] - 1, width).round().astype(np.int64)
+    """把二维数组缩放到 ``(height, width)``（下采样时使用最大池化保留峰值特征）。"""
+    h_in, w_in = data.shape
+    if h_in >= height and w_in >= width:
+        row_edges = np.linspace(0, h_in, height + 1, dtype=int)
+        col_edges = np.linspace(0, w_in, width + 1, dtype=int)
+        out = np.zeros((height, width), dtype=data.dtype)
+        for i in range(height):
+            r_start, r_end = row_edges[i], max(row_edges[i + 1], row_edges[i] + 1)
+            for j in range(width):
+                c_start, c_end = col_edges[j], max(col_edges[j + 1], col_edges[j] + 1)
+                out[i, j] = np.max(data[r_start:r_end, c_start:c_end])
+        return out
+
+    rows = np.linspace(0, h_in - 1, height).round().astype(np.int64)
+    cols = np.linspace(0, w_in - 1, width).round().astype(np.int64)
     return data[np.ix_(rows, cols)]
 
 

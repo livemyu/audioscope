@@ -36,3 +36,6 @@ uv.lock
 *.png
 *.wav
 !examples/**/*.wav
+
+# 本地配置
+instructions.md

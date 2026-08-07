@@ -13,7 +13,7 @@ jobs:
     name: 构建分发包
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: 安装 uv
         uses: astral-sh/setup-uv@v5
       - name: 构建 sdist 与 wheel
